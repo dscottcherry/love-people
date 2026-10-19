@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Love People—Make Disciples | Interactive Study Companion</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .fade-enter {
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.995); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-enter {
+      animation: modalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.95) translateY(6px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    /* Custom Range Slider */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 26px;
+      width: 26px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 4px solid currentColor;
+      cursor: grab;
+      margin-top: -9px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.15);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8px;
+      cursor: pointer;
+      border-radius: 999px;
+      background: #e2e8f0;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Top Header & Navigation -->
+  <header id="app-header" class="bg-teal-800 text-white shadow-lg transition-colors duration-500 sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center font-extrabold text-xl tracking-tighter border border-white/20">
+            lmd
+          </div>
+          <div>
+            <span class="text-xs uppercase tracking-widest text-white/75 font-semibold block">Interactive Study Companion • NWT Edition</span>
+            <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">Love People—Make Disciples</h1>
+          </div>
+        </div>
+
+        <button
+          onclick="exportNotes()"
+          class="lg:hidden px-3 py-1.5 rounded-lg text-xs font-bold bg-white/15 hover:bg-white/25 border border-white/20 transition-all"
+          title="Download all personal notes and progress"
+        >
+          📥 Export Notes
+        </button>
+      </div>
+
+      <!-- Mode Switcher Tabs + Export -->
+      <div class="flex flex-wrap items-center gap-2">
+        <nav class="flex flex-wrap gap-1 bg-black/20 p-1.5 rounded-xl border border-white/10">
+          <button onclick="switchTab('lessons')" id="tab-lessons" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-white text-slate-900 shadow-sm">
+            12 Lessons Scrubber
+          </button>
+          <button onclick="switchTab('intro')" id="tab-intro" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-white/85 hover:bg-white/10">
+            Governing Body Letter
+          </button>
+          <button onclick="switchTab('appendixA')" id="tab-appendixA" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-white/85 hover:bg-white/10">
+            Appendix A (34 Truths)
+          </button>
+          <button onclick="switchTab('appendixBC')" id="tab-appendixBC" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-white/85 hover:bg-white/10">
+            Appendix B & C
+          </button>
+        </nav>
+
+        <button
+          onclick="exportNotes()"
+          class="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white/15 hover:bg-white/25 border border-white/20 transition-all"
+          title="Download your study notes & checklist progress"
+        >
+          <span>📥 Export Notes</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+
+    <!-- VIEW 1: 12 LESSONS SCRUBBER -->
+    <section id="view-lessons" class="space-y-6">
+      
+      <!-- Interactive Timeline Scrubber Bar -->
+      <div class="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-200/80">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-2">
+            <span id="section-pill" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-100 text-teal-800">
+              Section 1: Starting a Conversation
+            </span>
+            <span class="text-xs text-slate-400 font-medium hidden sm:inline">• Drag slider, click any lesson, or press ⬅️ ➡️ keys</span>
+          </div>
+          <div class="text-sm font-bold text-slate-600">
+            Lesson <span id="scrubber-count" class="text-slate-900 text-base">1</span> of 12
+          </div>
+        </div>
+
+        <!-- Scrubber Track + Input -->
+        <div class="relative py-2">
+          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden absolute top-1/2 -translate-y-1/2 pointer-events-none">
+            <div id="scrubber-fill" class="h-full bg-teal-600 transition-all duration-300" style="width: 8.33%"></div>
+          </div>
+          <input
+            id="lesson-scrubber"
+            type="range"
+            min="1"
+            max="12"
+            value="1"
+            class="relative z-10 text-teal-600"
+            oninput="scrubToLesson(this.value)"
+          />
+        </div>
+
+        <!-- Quick-Jump Lesson Nodes -->
+        <div class="grid grid-cols-6 sm:grid-cols-12 gap-1.5 mt-4 pt-3 border-t border-slate-100" id="node-strip">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Animated Lesson Display Card -->
+      <div id="lesson-card-container" class="fade-enter">
+        <!-- Populated dynamically via JS -->
+      </div>
+
+    </section>
+
+    <!-- VIEW 2: GOVERNING BODY LETTER -->
+    <section id="view-intro" class="hidden fade-enter max-w-3xl mx-auto">
+      <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200 space-y-5 leading-relaxed text-slate-700">
+        <div class="border-b border-slate-100 pb-4">
+          <span class="text-xs font-bold uppercase tracking-widest text-teal-700">Introduction</span>
+          <h2 class="text-2xl font-extrabold text-slate-900 mt-1">A Letter From the Governing Body</h2>
+        </div>
+        <p class="font-medium text-slate-900">Dear Brothers and Sisters:</p>
+        <p>
+          Love for God and for people motivates us to “go . . . and make disciples of people of all the nations, baptizing them.” (
+          <button onclick="openScriptureModal('Matt. 28:19, 20')" class="font-semibold text-teal-700 underline hover:text-teal-900">Matt. 28:19, 20</button>;
+          <button onclick="openScriptureModal('Mark 12:28-31')" class="font-semibold text-teal-700 underline hover:text-teal-900">Mark 12:28-31</button>
+          ) Unselfish love is powerful. It can touch the hearts of those who are “rightly disposed for everlasting life.”—
+          <button onclick="openScriptureModal('Acts 13:48')" class="font-semibold text-teal-700 underline hover:text-teal-900">Acts 13:48</button>.
+        </p>
+        <p>
+          In the past, we focused on memorizing presentations and on leaving literature. Now we need to work on improving our conversation skills. We want to show love for others by talking about subjects that interest them. That means being flexible and carefully considering each person’s concerns and interests.
+        </p>
+        <div class="bg-slate-50 p-4 rounded-xl border-l-4 border-teal-600 text-slate-800 text-sm space-y-2">
+          <div class="font-bold text-slate-900">How This Brochure Works:</div>
+          <p>
+            The brochure has <strong>12 lessons</strong> featuring qualities that we need to cultivate in order to show love and make disciples. Each lesson is based on a Bible account in which Jesus or another first-century evangelizer displayed a specific quality in the ministry. The goal is, not to memorize presentations, but to look for ways to demonstrate our love for people.
+          </p>
+        </div>
+        <p>
+          As you consider each lesson, think carefully about how you can demonstrate the quality when speaking to people in your community. Strive to deepen your love for Jehovah and for people. That love, more than any specific technique, will help you reach your goal of making disciples.
+        </p>
+        <p>
+          We appreciate the great privilege to work shoulder to shoulder with you. (
+          <button onclick="openScriptureModal('Zeph. 3:9')" class="font-semibold text-teal-700 underline hover:text-teal-900">Zeph. 3:9</button>
+          ) May Jehovah richly bless you as you continue to love people and make disciples!
+        </p>
+        <div class="pt-2 font-semibold text-slate-900">
+          Your brothers,<br />
+          <span class="text-teal-800">Governing Body of Jehovah’s Witnesses</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: APPENDIX A (34 TRUTHS) -->
+    <section id="view-appendixA" class="hidden fade-enter space-y-6">
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-teal-700">Appendix A • Click any scripture badge to read NWT text</span>
+            <h2 class="text-2xl font-extrabold text-slate-900">Truths We Love to Teach (34 Simple Bible Truths)</h2>
+            <p class="text-sm text-slate-600 mt-1">
+              Introduce a truth by asking: <em>“Did you know that . . . ?”</em> or <em>“Have you ever heard that . . . ?”</em>
+            </p>
+          </div>
+          <div class="w-full md:w-72">
+            <input
+              type="text"
+              id="truth-search"
+              oninput="renderTruths()"
+              placeholder="Search truths or scriptures..."
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+            />
+          </div>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div id="truth-categories" class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-100">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Truths Grid -->
+      <div id="truths-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- VIEW 4: APPENDIX B & C -->
+    <section id="view-appendixBC" class="hidden fade-enter space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Appendix B -->
+        <div class="lg:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+          <div class="space-y-4">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-amber-700">Appendix B</span>
+              <h2 class="text-xl font-extrabold text-slate-900 mt-1">Should You End the Conversation?</h2>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-2">
+              <div class="flex items-center gap-2 text-emerald-900 font-bold text-sm">
+                <span>✅ When to Continue</span>
+              </div>
+              <p class="text-sm text-emerald-800 leading-relaxed">
+                When someone raises a sincere question or concern, we are happy to continue the conversation. We want to speak with people who may be “rightly disposed for everlasting life.”—
+                <button onclick="openScriptureModal('Acts 13:48')" class="font-bold underline hover:text-emerald-950">Acts 13:48</button>.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 space-y-2">
+              <div class="flex items-center gap-2 text-rose-900 font-bold text-sm">
+                <span>🛑 When to End Calmly & Tactfully</span>
+              </div>
+              <p class="text-sm text-rose-800 leading-relaxed">
+                What if a person is angry, wants to argue, or does not want to talk right now? Calmly and tactfully end the conversation. (
+                <button onclick="openScriptureModal('Prov. 17:14')" class="font-bold underline hover:text-rose-950">Prov. 17:14</button>
+                ) Try to leave on good terms so that the person may be willing to converse with us in the future.—
+                <button onclick="openScriptureModal('1 Pet. 2:12')" class="font-bold underline hover:text-rose-950">1 Pet. 2:12</button>.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
+            <strong>Key Scripture Principle (NWT):</strong> “Beginning a fight is like opening a floodgate; before the quarrel breaks out, take your leave.”—Proverbs 17:14.
+          </div>
+        </div>
+
+        <!-- Appendix C -->
+        <div class="lg:col-span-7 bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-5">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-indigo-700">Appendix C</span>
+            <h2 class="text-xl font-extrabold text-slate-900 mt-1">How to Conduct Bible Studies Using <em>Enjoy Life Forever!</em></h2>
+            <p class="text-sm text-slate-600 mt-1">Interactive session checklist for before, during, and after your Bible study.</p>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Before -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <h3 class="font-bold text-sm uppercase tracking-wider text-indigo-800 mb-2">Before the Study</h3>
+              <label class="flex items-start gap-3 text-sm text-slate-700 cursor-pointer">
+                <input type="checkbox" class="mt-1 rounded text-indigo-600 focus:ring-indigo-500" />
+                <span><strong>1. Prepare thoroughly:</strong> Think about the needs, circumstances, and viewpoint of your student. Anticipate points needing extra help and review the “Explore” section.</span>
+              </label>
+            </div>
+
+            <!-- During -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+              <h3 class="font-bold text-sm uppercase tracking-wider text-indigo-800 mb-2">During the Study</h3>
+              <label class="flex items-start gap-3 text-sm text-slate-700 cursor-pointer">
+                <input type="checkbox" class="mt-1 rounded text-indigo-600" />
+                <span><strong>2. Prayer:</strong> Open and close with prayer, unless the student objects.</span>
+              </label>
+              <label class="flex items-start gap-3 text-sm text-slate-700 cursor-pointer">
+                <input type="checkbox" class="mt-1 rounded text-indigo-600" />
+                <span><strong>3. Listen:</strong> Be careful not to talk too much. Focus on the material provided, and let the student express himself.</span>
+              </label>
+              <label class="flex items-start gap-3 text-sm text-slate-700 cursor-pointer">
+                <input type="checkbox" class="mt-1 rounded text-indigo-600" />
+                <span><strong>4. Starting a Main Section:</strong> Read the focus line for that section and highlight a few lesson titles.</span>
+              </label>
+              <label class="flex items-start gap-3 text-sm text-slate-700 cursor-pointer">
+                <input type="checkbox" class="mt-1 rounded text-indigo-600" />
+                <span><strong>5. Finishing a Main Section:</strong> Use the section review to help your student remember the truths learned.</span>
+              </label>
+              <div class="pl-6 pt-2 border-t border-slate-200/80 space-y-1.5 text-xs text-slate-600">
+                <div class="font-bold text-slate-800 text-sm mb-1">6. As you study each lesson:</div>
+                <div>• Read the text & all scriptures marked “Read” (plus other cited scriptures as needed).</div>
+                <div>• Play all videos marked “Play” (if available) & ask the student each question.</div>
+                <div>• Draw attention to the artwork in the <strong>“Dig Deeper”</strong> section and invite comments.</div>
+                <div>• Use the <strong>“Goal”</strong> box to track spiritual progress & ask what they enjoyed in <strong>“Explore”</strong>.</div>
+                <div>• Try to cover each lesson in one session.</div>
+              </div>
+            </div>
+
+            <!-- After -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <h3 class="font-bold text-sm uppercase tracking-wider text-indigo-800 mb-2">After the Study</h3>
+              <label class="flex items-start gap-3 text-sm text-slate-700 cursor-pointer">
+                <input type="checkbox" class="mt-1 rounded text-indigo-600" />
+                <span><strong>7. Keep thinking about your student:</strong> Pray for Jehovah to bless your student’s progress and to give you wisdom to know how to help him.</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- NWT Scripture Pop-Up Modal -->
+  <div
+    id="scripture-modal"
+    onclick="if(event.target === this) closeScriptureModal()"
+    class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4"
+  >
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden modal-enter">
+      <div class="bg-teal-800 text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <span class="text-[11px] uppercase tracking-widest text-teal-200 font-bold block">New World Translation (NWT)</span>
+          <h3 id="modal-ref-title" class="text-lg font-extrabold tracking-tight">John 4:6-9</h3>
+        </div>
+        <button
+          onclick="closeScriptureModal()"
+          class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 flex items-center justify-center font-bold text-white transition-colors"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div id="modal-verse-body" class="text-sm sm:text-base text-slate-800 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200 max-h-80 overflow-y-auto space-y-2">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
+          <span>Source: <em>New World Translation of the Holy Scriptures</em></span>
+          <a
+            id="modal-jw-link"
+            href="https://www.jw.org/en/library/bible/study-bible/books/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-bold text-teal-700 hover:text-teal-900 underline flex items-center gap-1"
+          >
+            <span>Open on JW.org ↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 mt-12 py-4 px-4 text-center text-xs text-slate-500">
+    Based on <em>Love People—Make Disciples</em> (lmd-E) • Scripture quotations from the modern-language <em>New World Translation of the Holy Scriptures</em> (JW.org).
+  </footer>
+
+  <script>
+    // Dictionary of NWT Scripture Texts
+    const nwtScriptures = {
+      "John 4:6-9": "6 In fact, Jacob’s well was there. Now Jesus, tired out as he was from the journey, was sitting at the well. It was about the sixth hour. 7 A woman of Samaria came to draw water. Jesus said to her: “Give me a drink.” 8 (For his disciples had gone off into the city to buy food.) 9 Therefore, the Samaritan woman said to him: “How is it that you, despite being a Jew, ask me for a drink, even though I am a Samaritan woman?” (For Jews have no dealings with Samaritans.)",
+      "1 Cor. 13:4, 5": "4 Love is patient and kind. Love is not jealous. It does not brag, does not get puffed up, 5 does not behave indecently, does not look for its own interests, does not become provoked. It does not keep account of the injury.",
+      "Matt. 7:12": "12 “All things, therefore, that you want men to do to you, you also must do to them. This, in fact, is what the Law and the Prophets mean.”",
+      "1 Cor. 9:20-23": "20 To the Jews I became as a Jew in order to gain Jews; to those under law I became as under law, though I myself am not under law, in order to gain those under law. 21 To those without law I became as without law, though I am not without law toward God but under law toward Christ, in order to gain those without law. 22 To the weak I became weak, in order to gain the weak. I have become all things to people of all sorts, so that I might by all possible means save some. 23 But I do all things for the sake of the good news, in order to share it with others.",
+      "Phil. 2:4": "4 as you look out not only for your own interests, but also for the interests of others.",
+      "Jas. 1:19": "19 Know this, my beloved brothers: Everyone must be quick to listen, slow to speak, slow to wrath,",
+      "Acts 8:30, 31": "30 Philip ran alongside and heard him reading aloud Isaiah the prophet, and he said: “Do you actually know what you are reading?” 31 He said: “Really, how could I ever do so unless someone guided me?” So he urged Philip to get on and sit down with him.",
+      "Prov. 15:23": "23 A man rejoices in giving the right answer, And a word spoken at the right time—how good it is!",
+      "Eccl. 3:1, 7": "1 There is an appointed time for everything, A time for every activity under the heavens... 7 A time to rip apart and a time to sew together; A time to be silent and a time to speak;",
+      "1 Cor. 9:22": "22 To the weak I became weak, in order to gain the weak. I have become all things to people of all sorts, so that I might by all possible means save some.",
+      "2 Cor. 2:17": "17 For we are not peddlers of the word of God as many men are, but we speak in all sincerity as sent from God, yes, in the sight of God and in company with Christ.",
+      "Col. 4:6": "6 Let your words always be gracious, seasoned with salt, so that you will know how you should answer each person.",
+      "John 9:1-7": "1 As he was passing along, he saw a man who had been blind from birth. 2 And his disciples asked him: “Rabbi, who sinned, this man or his parents, so that he was born blind?” 3 Jesus answered: “Neither this man sinned nor his parents, but it was so that the works of God might be made manifest in his case. 4 We must do the works of the One who sent me while it is day; the night is coming when no man can work. 5 As long as I am in the world, I am the world’s light.” 6 After he said these things, he spat on the ground and made paste with the saliva, and he smeared the paste on the man’s eyes 7 and said to him: “Go wash in the pool of Siloam” (which is translated “Sent Forth”). And he went and washed, and came back seeing.",
+      "John 9:35-38": "35 Jesus heard that they had thrown him out, and on finding him, he said: “Are you putting faith in the Son of man?” 36 The man answered: “And who is he, sir, so that I may put faith in him?” 37 Jesus said to him: “You have seen him, and in fact, he is the one speaking with you.” 38 Enable him to say: “I do put faith in him, Lord.” And he did obeisance to him.",
+      "1 Cor. 13:4": "4 Love is patient and kind. Love is not jealous. It does not brag, does not get puffed up,",
+      "Rom. 12:15, 16": "15 Rejoice with those who rejoice; weep with those who weep. 16 Have the same attitude toward others as toward yourselves; do not set your mind on lofty things, but be led along with the lowly things. Do not become wise in your own eyes.",
+      "Gal. 6:10": "10 Really, then, as long as we have the opportunity, let us work what is good toward all, but especially toward those related to us in the faith.",
+      "Heb. 13:16": "16 Moreover, do not forget to do good and to share what you have with others, for God is well-pleased with such sacrifices.",
+      "Acts 26:2, 3": "2 “Concerning all the things of which I am accused by the Jews, King Agrippa, I consider myself happy that it is before you I am to make my defense this day, 3 especially because you are an expert on all the customs as well as the controversies among the Jews. Therefore, I beg you to hear me out patiently.”",
+      "Acts 26:22": "22 However, because I have experienced the help that is from God, I continue to this very day bearing witness to both small and great, saying nothing except what the Prophets as well as Moses stated was going to take place—",
+      "Phil. 2:3": "3 Do nothing out of contentiousness or out of egotism, but with humility consider others superior to you,",
+      "Prov. 17:14": "14 Beginning a fight is like opening a floodgate; Before the quarrel breaks out, take your leave.",
+      "Titus 3:2": "2 to speak injuriously of no one, not to be belligerent, to be reasonable, displaying all mildness toward all men.",
+      "Rom. 12:16-18": "16 Have the same attitude toward others as toward yourselves; do not set your mind on lofty things, but be led along with the lowly things. Do not become wise in your own eyes. 17 Return evil for evil to no one. Take into consideration what is fine from the viewpoint of all men. 18 If possible, as far as it depends on you, be peaceable with all men.",
+      "1 Cor. 8:1": "1 Now concerning food offered to idols: We know that we all have knowledge. Knowledge puffs up, but love builds up.",
+      "2 Cor. 3:5": "5 Not that we of ourselves are adequately qualified to consider that anything comes from us, but our being adequately qualified comes from God,",
+      "Acts 17:22, 23": "22 Paul then stood up in the midst of the Areopagus and said: “Men of Athens, I see that in all things you seem to be more given to the fear of the deities than others are. 23 For instance, while passing along and carefully observing your objects of veneration, I also found an altar on which had been inscribed ‘To an Unknown God.’ Therefore, what you are unknowingly showing godly devotion to, this is what I am declaring to you.”",
+      "Acts 17:16": "16 Now while Paul was waiting for them in Athens, his spirit within him became irritated at seeing that the city was full of idols.",
+      "Prov. 20:5": "5 The thoughts of a man’s heart are like deep waters, But a discerning man draws them out.",
+      "Prov. 25:15": "15 By patience a commander is won over, And a mild tongue can break a bone.",
+      "2 Tim. 2:23-26": "23 Further, reject foolish and ignorant debates, knowing that they produce fights. 24 For a slave of the Lord does not need to fight, but needs to be gentle toward all, qualified to teach, showing restraint when wronged, 25 instructing with mildness those not favorably disposed. Perhaps God may give them repentance leading to an accurate knowledge of truth, 26 and they may come to their senses and escape from the snare of the Devil, seeing that they have been caught alive by him to do his will.",
+      "1 Pet. 3:15": "15 But sanctify the Christ as Lord in your hearts, always ready to make a defense before everyone who demands of you a reason for the hope you have, but doing so together with a mild temper and deep respect.",
+      "Luke 19:1-7": "1 He then entered Jericho and was passing through. 2 Now a man named Zacchaeus was there; he was a chief tax collector, and he was rich. 3 Well, he was trying to see who this Jesus was, but he could not see because of the crowd, since he was short. 4 So he ran ahead and climbed a sycamore tree in order to see him, for he was about to pass that way. 5 Now when Jesus got to the place, he looked up and said to him: “Zacchaeus, hurry and come down, for today I must stay in your house.” 6 With that he hurried down and joyfully welcomed him as a guest. 7 When they saw this, they were all muttering: “He went in to be a guest of a man who is a sinner.”",
+      "1 Thess. 2:2": "2 For although we had first suffered and been insolently treated in Philippi, just as you know, we mustered up boldness by means of our God to tell you the good news of God in the face of much opposition.",
+      "Matt. 10:19, 20": "19 However, when they hand you over, do not become anxious about how or what you are to speak, for what you are to speak will be given you in that hour; 20 for the ones speaking are not just you, but it is the spirit of your Father that speaks by you.",
+      "Luke 4:18": "18 “Jehovah’s spirit is upon me, because he anointed me to declare good news to the poor. He sent me to proclaim liberty to the captives and a recovery of sight to the blind, to send the crushed ones away in liberty,”",
+      "Acts 4:29": "29 And now, Jehovah, give attention to their threats, and grant to your slaves to keep on speaking your word with all boldness,",
+      "Matt. 10:16": "16 “Look! I am sending you out as sheep amidst wolves; so prove yourselves cautious as serpents and yet innocent as doves.”",
+      "Acts 4:31": "31 And when they had made supplication, the place where they were gathered together was shaken, and they were one and all filled with the holy spirit and were speaking the word of God with boldness.",
+      "Eph. 6:19, 20": "19 Pray also for me, that the words may be given to me when I open my mouth, so that I may be able to speak boldly in making known the sacred secret of the good news, 20 for which I am acting as an ambassador in chains, and that I may speak about it with boldness, as I ought to speak.",
+      "2 Tim. 1:7": "7 For God did not give us a spirit of cowardice, but one of power and of love and of soundness of mind.",
+      "Acts 19:8-10": "8 Entering into the synagogue, for three months he spoke with boldness, giving talks and reasoning persuasively about the Kingdom of God. 9 But when some stubbornly refused to believe, speaking injuriously about The Way before the crowd, he withdrew from them and separated the disciples from them, giving talks daily in the school auditorium of Tyrannus. 10 This went on for two years, so that all those living in the province of Asia heard the word of the Lord, both Jews and Greeks.",
+      "Acts 5:42": "42 And every day in the temple and from house to house, they continued without letup teaching and declaring the good news about the Christ, Jesus.",
+      "1 Cor. 13:4, 7": "4 Love is patient and kind... 7 It bears all things, believes all things, hopes all things, endures all things.",
+      "1 Cor. 9:26": "26 Therefore, the way I am running is not uncertainly; the way I am aiming my blows is so as not to be striking the air;",
+      "Acts 10:42": "42 Also, he ordered us to preach to the people and to give a thorough witness that this is the one decreed by God to be judge of the living and the dead.",
+      "1 Cor. 9:22, 23": "22 To the weak I became weak, in order to gain the weak. I have become all things to people of all sorts, so that I might by all possible means save some. 23 But I do all things for the sake of the good news, in order to share it with others.",
+      "2 Cor. 4:1": "1 Therefore, since we have this ministry through the mercy that was shown us, we do not give up.",
+      "Gal. 6:9": "9 So let us not give up in doing what is fine, for in due time we will reap if we do not tire out.",
+      "John 7:3-5": "3 So his brothers said to him: “Leave here and go into Judea, so that your disciples may also see the works you are doing. 4 For no one does anything in secret while seeking to be known publicly. If you are doing these things, show yourself to the world.” 5 His brothers were, in fact, not exercising faith in him.",
+      "1 Cor. 15:3, 4, 7": "3 For among the first things I handed on to you was what I also received, that Christ died for our sins according to the Scriptures; 4 and that he was buried, yes, that he was raised up on the third day according to the Scriptures... 7 After that he appeared to James, then to all the apostles.",
+      "Mark 4:26-28": "26 So he went on to say: “In this way the Kingdom of God is just as when a man casts seeds upon the ground. 27 He sleeps at night and rises up by day, and the seeds sprout and grow tall—just how, he does not know. 28 On its own the ground bears fruit gradually, first the stalk, then the head, finally the full grain in the head.”",
+      "1 Cor. 3:5-9": "5 What, then, is Apollos? Yes, what is Paul? Ministers through whom you became believers, just as the Lord granted each one. 6 I planted, Apollos watered, but God kept making it grow, 7 so that neither is the one who plants anything nor is the one who waters, but God who makes it grow. 8 Now the one who plants and the one who waters are one, but each person will receive his own reward according to his own labor. 9 For we are God’s fellow workers. You are God’s field under cultivation, God’s building.",
+      "2 Pet. 3:9": "9 Jehovah is not slow concerning his promise, as some people consider slowness, but he is patient with you because he does not desire anyone to be destroyed but desires all to attain to repentance.",
+      "Mark 6:30-34": "30 The apostles gathered around Jesus and reported to him all the things they had done and taught. 31 And he said to them: “Come, you yourselves, privately into an isolated place and rest up a little.” For there were many coming and going, and they had no leisure time even to eat a meal. 32 So they set off in the boat for an isolated place to be by themselves. 33 But people saw them going and many got to know it, and from all the cities they ran together on foot and got there ahead of them. 34 Well, on getting out, he saw a large crowd, and he was moved with pity for them, because they were as sheep without a shepherd. And he started to teach them many things.",
+      "Rom. 12:15": "15 Rejoice with those who rejoice; weep with those who weep.",
+      "Rom. 10:13, 14": "13 For “everyone who calls on the name of Jehovah will be saved.” 14 However, how will they call on him if they have not put faith in him? How, in turn, will they put faith in him about whom they have not heard? How, in turn, will they hear without someone to preach?",
+      "Phil. 2:3, 4": "3 Do nothing out of contentiousness or out of egotism, but with humility consider others superior to you, 4 as you look out not only for your own interests, but also for the interests of others.",
+      "1 Pet. 3:8": "8 Finally, all of you have unity of mind, fellow feeling, brotherly affection, tender compassion, and humility.",
+      "John 3:1, 2": "1 Now there was a man of the Pharisees named Nicodemus, a ruler of the Jews. 2 This one came to him in the night and said to him: “Rabbi, we know that you have come from God as a teacher, for no one can perform these signs that you perform unless God is with him.”",
+      "John 12:42, 43": "42 All the same, many even of the rulers actually put faith in him, but they would not acknowledge him because of the Pharisees, so that they would not be expelled from the synagogue; 43 for they loved the glory of men even more than the glory of God.",
+      "1 Thess. 2:8": "8 So having a tender affection for you, we were determined to impart to you, not only the good news of God but also our very selves, because you became so beloved to us.",
+      "Phil. 2:13": "13 For God is the one who for the sake of his good pleasure energizes you, giving you both the desire and the power to act.",
+      "Prov. 3:27": "27 Do not withhold good from those to whom it is due If it is within your power to help.",
+      "Acts 20:35": "35 I have exhibited to you in all things that by calculations and hard work like this you must assist those who are weak and must keep in mind the words of the Lord Jesus, when he himself said: ‘There is more happiness in giving than there is in receiving.’”",
+      "2 Cor. 12:15": "15 For my part, I will most gladly spend and be completely spent for your souls. If I love you so much more, am I to be loved the less?",
+      "Matt. 6:25-27": "25 “On this account I say to you: Stop being anxious about your lives as to what you will eat or what you will drink, or about your bodies as to what you will wear. Does not life mean more than food and the body than clothing? 26 Observe intently the birds of heaven; they do not sow seed or reap or gather into storehouses, yet your heavenly Father feeds them. Are you not worth more than they are? 27 Who of you by being anxious can add one cubit to his life span?”",
+      "1 Cor. 14:9": "9 In the same way, unless you with the tongue utter speech that is easily understood, how will anyone know what is being said? You will, in fact, be speaking into the air.",
+      "Matt. 11:25": "25 At that time Jesus said in response: “I publicly praise you, Father, Lord of heaven and earth, because you have hidden these things from the wise and intellectual ones and have revealed them to young children.”",
+      "John 16:12": "12 “I still have many things to say to you, but you are not able to bear them now.”",
+      "1 Cor. 2:1": "1 So when I came to you, brothers, I did not come with extravagant speech or wisdom declaring the sacred secret of God to you.",
+      "Mark 10:17-22": "17 As he was going out on his way, a man ran up and fell to his knees before him and put the question to him: “Good Teacher, what must I do to inherit everlasting life?” 18 Jesus said to him: “Why do you call me good? Nobody is good except one, God. 19 You know the commandments: ‘Do not murder, do not commit adultery, do not steal, do not bear false witness, do not defraud, honor your father and your mother.’” 20 The man said to him: “Teacher, all these things I have kept from my youth on.” 21 Jesus looked at him and felt love for him and said, “One thing is missing about you: Go, sell what things you have and give to the poor, and you will have treasure in heaven; and come be my follower.” 22 But he grew sad at the answer and went away grieved, for he had many possessions.",
+      "Prov. 27:9": "9 Oil and incense make the heart rejoice; So does sweet friendship springing from sincere counsel.",
+      "Ps. 141:5": "5 Should the righteous one strike me, it would be an act of loyal love; Should he reprove me, it would be like oil on my head, Which my head would never refuse.",
+      "Prov. 25:12": "12 Like an earring of gold and an ornament of fine gold Is a wise reprover to the receptive ear.",
+      "Prov. 27:6": "6 The wounds inflicted by a lover are faithful, But the kisses of an enemy are abundant.",
+      "Col. 4:5, 6": "5 Go on walking in wisdom toward those on the outside, making the best use of your time. 6 Let your words always be gracious, seasoned with salt, so that you will know how you should answer each person.",
+      "Matt. 28:19, 20": "19 Go, therefore, and make disciples of people of all the nations, baptizing them in the name of the Father and of the Son and of the holy spirit, 20 teaching them to observe all the things I have commanded you. And look! I am with you all the days until the conclusion of the system of things.",
+      "Mark 12:28-31": "28 One of the scribes who had come up and heard them disputing, knowing that he had answered them in a fine way, asked him: “Which commandment is first of all?” 29 Jesus answered: “The first is, ‘Hear, O Israel, Jehovah our God is one Jehovah, 30 and you must love Jehovah your God with your whole heart and with your whole soul and with your whole mind and with your whole strength.’ 31 The second is this, ‘You must love your neighbor as yourself.’ There is no other commandment greater than these.”",
+      "Acts 13:48": "48 When those of the nations heard this, they began to rejoice and to glorify the word of Jehovah, and all those who were rightly disposed for everlasting life became believers.",
+      "Zeph. 3:9": "9 For then I will change the language of the peoples to a pure language, So that all of them may call on the name of Jehovah, To serve him shoulder to shoulder.",
+      "1 Pet. 2:12": "12 Maintain your conduct fine among the nations, so that when they accuse you of being wrongdoers, they may be eyewitnesses of your fine works and, as a result, glorify God in the day of his inspection."
+    };
+
+    // Complete Data for all 12 Lessons
+    const lessons = [
+      {
+        num: 1,
+        section: "Section 1: Starting a Conversation",
+        theme: "teal",
+        quality: "Interest in Others",
+        scripture: "John 4:6-9",
+        video: "Jesus and the Woman at the Well",
+        principle: "“Love . . . does not look for its own interests.”—1 Cor. 13:4, 5.",
+        principleRef: "1 Cor. 13:4, 5",
+        character: "Jesus",
+        questions: [
+          "What did Jesus observe about the woman before starting a conversation?",
+          "Jesus said: “Give me a drink.” Why was this an effective way to begin the conversation?"
+        ],
+        coreLesson: "We are more likely to have a good conversation if we start with a topic that interests the other person.",
+        imitate: [
+          {
+            title: "Be flexible.",
+            detail: "Do not insist on starting a conversation on a topic you had in mind. Start with something that others are thinking about today. Ask yourself: ‘What is in the news?’ ‘What are my neighbors, coworkers, or classmates talking about?’"
+          },
+          {
+            title: "Be observant.",
+            detail: "Ask yourself: ‘What is the person currently doing? What might he be thinking about?’ ‘What do the person’s clothing, appearance, or home tell me about his beliefs or culture?’ ‘Is this a good time to talk to the person?’"
+          },
+          {
+            title: "Listen.",
+            detail: "Don’t talk too much. Encourage the other person to express himself. When appropriate, ask questions."
+          }
+        ],
+        seeAlso: ["Matt. 7:12", "1 Cor. 9:20-23", "Phil. 2:4", "Jas. 1:19"]
+      },
+      {
+        num: 2,
+        section: "Section 1: Starting a Conversation",
+        theme: "teal",
+        quality: "Naturalness",
+        scripture: "Acts 8:30, 31",
+        video: "Philip Preaches to the Ethiopian Eunuch",
+        principle: "“A word spoken at the right time—how good it is!”—Prov. 15:23.",
+        principleRef: "Prov. 15:23",
+        character: "Philip",
+        questions: [
+          "How did Philip start the conversation?",
+          "Why was this a natural way to start the conversation and share a new truth with the man?"
+        ],
+        coreLesson: "If we allow a conversation to develop naturally, it is more likely that the other person will feel at ease and be open to discussing our message.",
+        imitate: [
+          {
+            title: "Be observant.",
+            detail: "A person’s facial expressions and body language can reveal a lot. Does the person seem willing to speak with you? You might introduce a Bible truth by simply asking, “Did you know that . . . ?” Avoid forcing a conversation with someone who does not want to talk."
+          },
+          {
+            title: "Be patient.",
+            detail: "Do not feel that you must introduce a Bible truth immediately. Wait for the right opportunity so that you can bring it up naturally. Sometimes, this may mean waiting until the next conversation you have with the person."
+          },
+          {
+            title: "Be adaptable.",
+            detail: "A conversation may go in an unexpected direction. So be willing to share something that is relevant to the person, even if that means discussing a different Bible truth than the one you had in mind."
+          }
+        ],
+        seeAlso: ["Eccl. 3:1, 7", "1 Cor. 9:22", "2 Cor. 2:17", "Col. 4:6"]
+      },
+      {
+        num: 3,
+        section: "Section 1: Starting a Conversation",
+        theme: "teal",
+        quality: "Kindness",
+        scripture: "John 9:1-7",
+        video: "Jesus Heals a Blind Man",
+        principle: "“Love is . . . kind.”—1 Cor. 13:4.",
+        principleRef: "1 Cor. 13:4",
+        character: "Jesus",
+        questions: [
+          "What did Jesus do first—heal the blind man or share the good news with him?—See John 9:35-38.",
+          "Why might Jesus’ approach have made the man more responsive to the good news?"
+        ],
+        coreLesson: "A person will be more likely to listen to our message if he senses that we care about him.",
+        imitate: [
+          {
+            title: "Empathize with the person.",
+            detail: "Try to imagine how he feels. Ask yourself: ‘What may he be concerned about? What might he find helpful and appealing?’ Show that you care by listening; if he mentions a problem he is facing, do not change the subject."
+          },
+          {
+            title: "Speak kindly and respectfully.",
+            detail: "When you feel compassion for the person and truly want to help him, it will come through in the way you speak. Choose your words and tone of voice carefully, and avoid saying things that could offend."
+          },
+          {
+            title: "Be helpful.",
+            detail: "Look for appropriate opportunities to help the person in practical ways. Acts of kindness can open the door to a conversation."
+          }
+        ],
+        seeAlso: ["John 9:35-38", "Rom. 12:15, 16", "Gal. 6:10", "Heb. 13:16"]
+      },
+      {
+        num: 4,
+        section: "Section 1: Starting a Conversation",
+        theme: "teal",
+        quality: "Humility",
+        scripture: "Acts 26:2, 3",
+        video: "Paul Preaches to King Agrippa",
+        principle: "“With humility consider others superior to you.”—Phil. 2:3.",
+        principleRef: "Phil. 2:3",
+        character: "Paul",
+        questions: [
+          "How did Paul show humility in the way he spoke to King Agrippa?",
+          "How did Paul draw attention to Jehovah and the Scriptures rather than to himself?—See Acts 26:22."
+        ],
+        coreLesson: "Our message is more appealing when we present it humbly and respectfully.",
+        imitate: [
+          {
+            title: "Do not be condescending.",
+            detail: "Avoid giving the impression that you know everything and that the other person knows nothing. Speak with him in a respectful way."
+          },
+          {
+            title: "Make clear that the Bible is the source of the truths you share.",
+            detail: "God’s Word contains thoughts that touch people’s hearts. When we use it, we are building their faith on the right foundation."
+          },
+          {
+            title: "Remain mild.",
+            detail: "Do not insist on making a point. We do not want to argue. Show humility by staying calm and knowing when to leave. (Prov. 17:14; Titus 3:2) A mild response may leave the door open for a productive conversation in the future."
+          }
+        ],
+        seeAlso: ["Acts 26:22", "Prov. 17:14", "Titus 3:2", "Rom. 12:16-18", "1 Cor. 8:1", "2 Cor. 3:5"]
+      },
+      {
+        num: 5,
+        section: "Section 1: Starting a Conversation",
+        theme: "teal",
+        quality: "Tact",
+        scripture: "Acts 17:22, 23",
+        video: "Paul Preaches to the Athenians",
+        principle: "“Let your words always be gracious.”—Col. 4:6.",
+        principleRef: "Col. 4:6",
+        character: "Paul",
+        questions: [
+          "How did Paul feel about the false religious practices he saw in Athens?—See Acts 17:16.",
+          "Rather than condemn the Athenians, how did Paul tactfully use their beliefs as a way to share the good news?"
+        ],
+        coreLesson: "People are more likely to listen to us if we carefully choose what we say as well as how and when we say it.",
+        imitate: [
+          {
+            title: "Choose appealing words.",
+            detail: "For example, when speaking with someone from a non-Christian background, you may need to adjust the way you introduce the Bible or how you refer to Jesus."
+          },
+          {
+            title: "Do not be quick to correct a person.",
+            detail: "Allow him to express himself freely. If he says something that conflicts with Bible teachings, resist any urge to argue. (Jas. 1:19) By listening to him, you gain insight into his viewpoint.—Prov. 20:5."
+          },
+          {
+            title: "Agree with and commend the person where possible.",
+            detail: "He may sincerely believe that his religious beliefs are correct. Build common ground first, and then progressively help him understand what the Bible teaches."
+          }
+        ],
+        seeAlso: ["Acts 17:16", "Prov. 20:5", "Prov. 25:15", "2 Tim. 2:23-26", "1 Pet. 3:15"]
+      },
+      {
+        num: 6,
+        section: "Section 1: Starting a Conversation",
+        theme: "teal",
+        quality: "Boldness",
+        scripture: "Luke 19:1-7",
+        video: "Jesus Preaches to Zacchaeus",
+        principle: "“We mustered up boldness by means of our God to tell you the good news.”—1 Thess. 2:2.",
+        principleRef: "1 Thess. 2:2",
+        character: "Jesus",
+        questions: [
+          "Why might some people have avoided Zacchaeus?",
+          "What moved Jesus to share the good news with him anyway?"
+        ],
+        coreLesson: "We need boldness to preach the Kingdom message impartially.",
+        imitate: [
+          {
+            title: "Rely on Jehovah.",
+            detail: "God’s spirit empowered Jesus to preach, and it can empower you too. (Matt. 10:19, 20; Luke 4:18) Ask Jehovah for boldness to preach to those you might find intimidating.—Acts 4:29."
+          },
+          {
+            title: "Do not prejudge people.",
+            detail: "We may hesitate to approach some people because of their physical appearance, social or economic status, lifestyle, or religious beliefs. Remember: Jehovah and Jesus can read hearts; we cannot. No one is beyond the reach of Jehovah’s mercy."
+          },
+          {
+            title: "Balance boldness with tact and caution.",
+            detail: "(Matt. 10:16) Avoid arguing. Politely end the conversation if the person is unreceptive to the good news or if you feel unsafe.—Prov. 17:14."
+          }
+        ],
+        seeAlso: ["Matt. 10:19, 20", "Luke 4:18", "Acts 4:29", "Matt. 10:16", "Acts 4:31", "Eph. 6:19, 20", "2 Tim. 1:7"]
+      },
+      {
+        num: 7,
+        section: "Section 2: Following Up",
+        theme: "amber",
+        quality: "Perseverance",
+        scripture: "Acts 19:8-10",
+        video: "Paul Perseveres in Ephesus",
+        principle: "“They continued without letup teaching and declaring the good news.”—Acts 5:42.",
+        principleRef: "Acts 5:42",
+        character: "Paul",
+        questions: [
+          "Rather than giving up when some opposed him, how did Paul persevere in helping those who showed interest?",
+          "How often did Paul go back to teach these interested ones, and for how long did he do so?"
+        ],
+        coreLesson: "We need to invest time and effort to make effective return visits and to start Bible studies.",
+        imitate: [
+          {
+            title: "Adapt your schedule to the other person’s.",
+            detail: "Ask yourself: ‘When would I be most likely to contact him? When and where would he be most likely to converse with me?’ Be willing to follow up, even if the time is inconvenient for you."
+          },
+          {
+            title: "Make an appointment.",
+            detail: "At the end of each conversation, try to confirm a specific time when you can speak with the person again. Be sure to keep the appointment."
+          },
+          {
+            title: "Remain hopeful.",
+            detail: "Do not quickly assume that a person who is rarely at home or is often busy is not interested. (1 Cor. 13:4, 7) Instead, balance perseverance with making wise use of your time.—1 Cor. 9:26."
+          }
+        ],
+        seeAlso: ["1 Cor. 13:4, 7", "1 Cor. 9:26", "Acts 10:42", "1 Cor. 9:22, 23", "2 Cor. 4:1", "Gal. 6:9"]
+      },
+      {
+        num: 8,
+        section: "Section 2: Following Up",
+        theme: "amber",
+        quality: "Patience",
+        scripture: "John 7:3-5",
+        video: "Jesus Patiently Helps His Brother",
+        principle: "“Love is patient.”—1 Cor. 13:4.",
+        principleRef: "1 Cor. 13:4",
+        character: "Jesus",
+        questions: [
+          "How did Jesus’ brothers initially respond to his message?",
+          "What shows that Jesus did not give up on his brother James?"
+        ],
+        coreLesson: "We need to be patient because some people take longer than others to respond to the good news.",
+        imitate: [
+          {
+            title: "Try a different approach.",
+            detail: "If the person does not immediately agree to a Bible study, do not pressure him. When appropriate, use videos or articles to help him understand what happens on a Bible study and how he would benefit."
+          },
+          {
+            title: "Do not compare.",
+            detail: "Each person is unique. If a family member or a return visit hesitates to study the Bible, consider why. Is he emotionally connected to a religious belief? Does he face pressure from relatives or neighbors? Allow time for him to think and appreciate what the Bible says."
+          },
+          {
+            title: "Pray about the interested person.",
+            detail: "Ask Jehovah to help you remain positive and tactful. Pray for discernment to know when to stop calling on someone who shows little interest.—1 Cor. 9:26."
+          }
+        ],
+        seeAlso: ["1 Cor. 15:3, 4, 7", "1 Cor. 9:26", "Mark 4:26-28", "1 Cor. 3:5-9", "2 Pet. 3:9"]
+      },
+      {
+        num: 9,
+        section: "Section 2: Following Up",
+        theme: "amber",
+        quality: "Empathy",
+        scripture: "Mark 6:30-34",
+        video: "Jesus Feels Pity for the Crowd",
+        principle: "“Rejoice with those who rejoice; weep with those who weep.”—Rom. 12:15.",
+        principleRef: "Rom. 12:15",
+        character: "Jesus",
+        questions: [
+          "Why were Jesus and his apostles hoping “to be by themselves”?",
+          "What motivated Jesus to teach the crowd?"
+        ],
+        coreLesson: "Empathy moves us to care about people, not just about our message.",
+        imitate: [
+          {
+            title: "Listen carefully.",
+            detail: "Allow the person to express himself. Do not interrupt him or quickly dismiss his feelings, concerns, or objections. By paying attention, you show him that you care about what he thinks."
+          },
+          {
+            title: "Think about the interested person.",
+            detail: "Based on your conversations with him, ask yourself: ‘Why does he need to hear the truth?’ ‘How would studying the Bible make his daily life and his future better?’"
+          },
+          {
+            title: "Share information that addresses his needs.",
+            detail: "As soon as possible, demonstrate how a Bible study can answer his questions and can help him in practical ways."
+          }
+        ],
+        seeAlso: ["Rom. 10:13, 14", "Phil. 2:3, 4", "1 Pet. 3:8"]
+      },
+      {
+        num: 10,
+        section: "Section 3: Making Disciples",
+        theme: "indigo",
+        quality: "Commitment",
+        scripture: "John 3:1, 2",
+        video: "Jesus Teaches Nicodemus",
+        principle: "“We were determined to impart to you, not only the good news of God but also our very selves, because you became so beloved to us.”—1 Thess. 2:8.",
+        principleRef: "1 Thess. 2:8",
+        character: "Jesus",
+        questions: [
+          "Why might Nicodemus have preferred to approach Jesus at night?—See John 12:42, 43.",
+          "By meeting with Nicodemus at night, how did Jesus show that he was committed to making disciples?"
+        ],
+        coreLesson: "We show that we love people by being committed to helping them become disciples.",
+        imitate: [
+          {
+            title: "Study at a time and place convenient for your Bible student.",
+            detail: "He may prefer a specific day of the week or time of day. Would he be more comfortable studying at his workplace, in his home, or in a public place? To the extent possible, adjust your schedule to accommodate his needs."
+          },
+          {
+            title: "Study regularly.",
+            detail: "If you will be away, do not cancel the study session. Instead, consider: Could you conduct the study at another time that week? Over the phone or by videoconferencing? Or ask another publisher to conduct?"
+          },
+          {
+            title: "Pray for the right attitude.",
+            detail: "Ask Jehovah for help to remain committed to your student, even if he struggles to study regularly or to apply Scriptural counsel. (Phil. 2:13) Likely your student has many good qualities; pray for help to focus on them."
+          }
+        ],
+        seeAlso: ["John 12:42, 43", "Phil. 2:13", "Prov. 3:27", "Acts 20:35", "2 Cor. 12:15"]
+      },
+      {
+        num: 11,
+        section: "Section 3: Making Disciples",
+        theme: "indigo",
+        quality: "Simplicity",
+        scripture: "Matt. 6:25-27",
+        video: "Jesus Illustrates Our Father's Care for Us",
+        principle: "“Use speech that is easily understood.”—1 Cor. 14:9.",
+        principleRef: "1 Cor. 14:9",
+        character: "Jesus",
+        questions: [
+          "How did Jesus illustrate Jehovah’s care for us?",
+          "Although Jesus knew many facts about birds, on what simple detail did he focus? Why was that an effective approach?"
+        ],
+        coreLesson: "When we teach in a simple way, people will remember what we taught them and we will touch their hearts.",
+        imitate: [
+          {
+            title: "Do not talk too much.",
+            detail: "Rather than relating all that you know about a subject, focus on the material in the study publication. After you ask a question, wait patiently for your student to answer. Once your student understands the main point, move on."
+          },
+          {
+            title: "Help your student connect new teachings with what he already knows.",
+            detail: "For example, before beginning a lesson about the resurrection, you might briefly review what the student has already learned about the condition of the dead."
+          },
+          {
+            title: "Use illustrations carefully.",
+            detail: "Before using an illustration, ask yourself: ‘Is the illustration simple?’ ‘Will my student easily understand it?’ ‘Will it help my student to remember the main point—not just the illustration?’"
+          }
+        ],
+        seeAlso: ["Matt. 11:25", "John 16:12", "1 Cor. 2:1"]
+      },
+      {
+        num: 12,
+        section: "Section 3: Making Disciples",
+        theme: "indigo",
+        quality: "Courage",
+        scripture: "Mark 10:17-22",
+        video: "Jesus Counsels a Rich Young Ruler",
+        principle: "“Oil and incense make the heart rejoice; so does sweet friendship springing from sincere counsel.”—Prov. 27:9.",
+        principleRef: "Prov. 27:9",
+        character: "Jesus",
+        questions: [
+          "What good qualities might Jesus have seen in the young ruler?",
+          "Why did Jesus need both love and courage to counsel the man?"
+        ],
+        coreLesson: "We need to speak lovingly yet frankly with our students to help them make spiritual progress.",
+        imitate: [
+          {
+            title: "Help your student set and reach goals.",
+            detail: "Use the “Goal” feature in each lesson of Enjoy Life Forever! Help your student identify specific steps to reach both short-term and long-term goals. Commend your student regularly for his progress."
+          },
+          {
+            title: "Identify obstacles to progress, and help your student overcome those obstacles.",
+            detail: "Ask yourself: ‘If my student is not progressing toward baptism, what is hindering him? What practical help can I offer?’ Pray for the courage to discuss frankly and lovingly what your student needs to do."
+          },
+          {
+            title: "Discontinue unproductive studies.",
+            detail: "Determine whether your study is productive: Is he applying what he learns? Attending meetings? Wanting to become one of Jehovah’s Witnesses? If unwilling to progress, tactfully explain why you are discontinuing and what progress is needed to resume."
+          }
+        ],
+        seeAlso: ["Ps. 141:5", "Prov. 25:12", "Prov. 27:6", "1 Cor. 9:26", "Col. 4:5, 6"]
+      }
+    ];
+
+    // Appendix A: All 34 Truths with NWT Verse Summaries
+    const truthsData = [
+      { id: 1, cat: "The Future", text: "Current events and attitudes indicate a change is near.", refs: "Matt. 24:3, 7, 8; Luke 21:10, 11; 2 Tim. 3:1-5", verseQuote: "“For nation will rise against nation and kingdom against kingdom, and there will be food shortages and earthquakes in one place after another. All these things are a beginning of pangs of distress.”—Matthew 24:7, 8 (NWT)." },
+      { id: 2, cat: "The Future", text: "The earth will never be destroyed.", refs: "Ps. 104:5; Eccl. 1:4", verseQuote: "“He has established the earth on its foundations; it will not be moved from its place forever and ever.”—Psalm 104:5 (NWT)." },
+      { id: 3, cat: "The Future", text: "The earth’s environment will be restored.", refs: "Isa. 35:1, 2; Rev. 11:18", verseQuote: "“The wilderness and the parched land will exult, and the desert plain will be joyful and blossom as the saffron.”—Isaiah 35:1 (NWT)." },
+      { id: 4, cat: "The Future", text: "Everyone will have perfect health.", refs: "Isa. 33:24; 35:5, 6", verseQuote: "“And no resident will say: ‘I am sick.’”—Isaiah 33:24 (NWT)." },
+      { id: 5, cat: "The Future", text: "You can live forever on earth.", refs: "Ps. 37:29; Matt. 5:5", verseQuote: "“The righteous will possess the earth, and they will live forever on it.”—Psalm 37:29 (NWT)." },
+      { id: 6, cat: "Family", text: "A husband should “love his wife as he does himself.”", refs: "Eph. 5:33; Col. 3:19", verseQuote: "“Nevertheless, each one of you must love his wife as he does himself; on the other hand, the wife should have deep respect for her husband.”—Ephesians 5:33 (NWT)." },
+      { id: 7, cat: "Family", text: "A wife should deeply respect her husband.", refs: "Eph. 5:33; Col. 3:18", verseQuote: "“You wives, be in subjection to your husbands, as it is becoming in the Lord.”—Colossians 3:18 (NWT)." },
+      { id: 8, cat: "Family", text: "A husband and a wife should be loyal to each other.", refs: "Mal. 2:16; Matt. 19:4-6, 9; Heb. 13:4", verseQuote: "“Let marriage be honorable among all, and let the marriage bed be without defilement.”—Hebrews 13:4 (NWT)." },
+      { id: 9, cat: "Family", text: "Children who respect and obey their parents will succeed.", refs: "Prov. 1:8, 9; Eph. 6:1-3", verseQuote: "“Children, be obedient to your parents in union with the Lord, for this is righteous. ‘Honor your father and your mother’... that it may go well with you.”—Ephesians 6:1-3 (NWT)." },
+      { id: 10, cat: "God", text: "God has a name.", refs: "Ps. 83:18; Jer. 10:10", verseQuote: "“May people know that you, whose name is Jehovah, You alone are the Most High over all the earth.”—Psalm 83:18 (NWT)." },
+      { id: 11, cat: "God", text: "God communicates with us.", refs: "2 Tim. 3:16, 17; 2 Pet. 1:20, 21", verseQuote: "“All Scripture is inspired of God and beneficial for teaching, for reproving, for setting things straight, for disciplining in righteousness.”—2 Timothy 3:16 (NWT)." },
+      { id: 12, cat: "God", text: "God is fair and unbiased.", refs: "Deut. 10:17; Acts 10:34, 35", verseQuote: "“At this Peter began to speak, and he said: ‘Now I truly understand that God is not partial, but in every nation the man who fears him and does what is right is acceptable to him.’”—Acts 10:34, 35 (NWT)." },
+      { id: 13, cat: "God", text: "God wants to help us.", refs: "Ps. 46:1; 145:18, 19", verseQuote: "“God is our refuge and strength, A help that is readily found in times of distress.”—Psalm 46:1 (NWT)." },
+      { id: 14, cat: "Prayer", text: "God wants us to pray to him.", refs: "Ps. 62:8; 65:2; 1 Pet. 5:7", verseQuote: "“O Hearer of prayer, to you people of all sorts will come.”—Psalm 65:2 (NWT)." },
+      { id: 15, cat: "Prayer", text: "The Bible teaches us how to pray.", refs: "Matt. 6:7-13; Luke 11:1-4", verseQuote: "“You must pray, then, this way: ‘Our Father in the heavens, let your name be sanctified. Let your Kingdom come. Let your will take place, as in heaven, also on earth.’”—Matthew 6:9, 10 (NWT)." },
+      { id: 16, cat: "Prayer", text: "We should pray often.", refs: "Matt. 7:7, 8; 1 Thess. 5:17", verseQuote: "“Pray constantly.”—1 Thessalonians 5:17 (NWT)." },
+      { id: 17, cat: "Jesus", text: "Jesus was a great teacher whose advice always works.", refs: "Matt. 6:14, 15, 34; 7:12", verseQuote: "“So never be anxious about the next day, for the next day will have its own anxieties. Each day has enough of its own troubles.”—Matthew 6:34 (NWT)." },
+      { id: 18, cat: "Jesus", text: "Jesus foretold events we see today.", refs: "Matt. 24:3, 7, 8, 14; Luke 21:10, 11", verseQuote: "“And this good news of the Kingdom will be preached in all the inhabited earth for a witness to all the nations, and then the end will come.”—Matthew 24:14 (NWT)." },
+      { id: 19, cat: "Jesus", text: "Jesus is God’s Son.", refs: "Matt. 16:16; John 3:16; 1 John 4:15", verseQuote: "“Simon Peter answered: ‘You are the Christ, the Son of the living God.’”—Matthew 16:16 (NWT)." },
+      { id: 20, cat: "Jesus", text: "Jesus is not God Almighty.", refs: "John 14:28; 1 Cor. 11:3", verseQuote: "“You heard that I said to you, ‘I am going away and I am coming back to you.’ If you loved me, you would rejoice that I am going to the Father, for the Father is greater than I am.”—John 14:28 (NWT)." },
+      { id: 21, cat: "God's Kingdom", text: "God’s Kingdom is a real government in heaven.", refs: "Dan. 2:44; 7:13, 14; Matt. 6:9, 10; Rev. 11:15", verseQuote: "“In the days of those kings the God of heaven will set up a kingdom that will never be destroyed.”—Daniel 2:44 (NWT)." },
+      { id: 22, cat: "God's Kingdom", text: "God’s Kingdom will replace human governments.", refs: "Ps. 2:7-9; Dan. 2:44", verseQuote: "“It will crush and put an end to all these kingdoms, and it itself will stand to times indefinite.”—Daniel 2:44 (NWT)." },
+      { id: 23, cat: "God's Kingdom", text: "God’s Kingdom is the only solution to mankind’s problems.", refs: "Ps. 37:10, 11; 46:9; Isa. 65:21-23", verseQuote: "“Just a little while longer, and the wicked will be no more... But the meek will possess the earth, And they will find exquisite delight in the abundance of peace.”—Psalm 37:10, 11 (NWT)." },
+      { id: 24, cat: "Suffering", text: "God does not cause our suffering.", refs: "Deut. 32:4; Jas. 1:13", verseQuote: "“When under trial, let no one say: ‘I am being tried by God.’ For with evil things God cannot be tried, nor does he himself try anyone.”—James 1:13 (NWT)." },
+      { id: 25, cat: "Suffering", text: "Satan rules this world.", refs: "Luke 4:5, 6; 1 John 5:19", verseQuote: "“We know that we originate with God, but the whole world is lying in the power of the wicked one.”—1 John 5:19 (NWT)." },
+      { id: 26, cat: "Suffering", text: "God cares about your suffering.", refs: "Ps. 34:17-19; Isa. 41:10, 13", verseQuote: "“Jehovah is close to the brokenhearted; He saves those who are crushed in spirit.”—Psalm 34:18 (NWT)." },
+      { id: 27, cat: "Suffering", text: "God will soon end suffering.", refs: "Isa. 65:17; Rev. 21:3, 4", verseQuote: "“And he will wipe out every tear from their eyes, and death will be no more, neither will mourning nor outcry nor pain be anymore. The former things have passed away.”—Revelation 21:4 (NWT)." },
+      { id: 28, cat: "Death", text: "The dead are unconscious; they are not suffering.", refs: "Eccl. 9:5; John 11:11-14", verseQuote: "“For the living know that they will die, but the dead know nothing at all.”—Ecclesiastes 9:5 (NWT)." },
+      { id: 29, cat: "Death", text: "The dead cannot help us or harm us.", refs: "Ps. 146:4; Eccl. 9:6, 10", verseQuote: "“His spirit goes out, he returns to the ground; On that very day his thoughts perish.”—Psalm 146:4 (NWT)." },
+      { id: 30, cat: "Death", text: "Dead loved ones will be resurrected.", refs: "Job 14:13-15; John 5:28, 29; Acts 24:15", verseQuote: "“Do not be amazed at this, for the hour is coming in which all those in the memorial tombs will hear his voice and come out.”—John 5:28, 29 (NWT)." },
+      { id: 31, cat: "Death", text: "“Death will be no more.”", refs: "Rev. 21:3, 4; Isa. 25:8", verseQuote: "“He will swallow up death forever, And the Sovereign Lord Jehovah will wipe away the tears from all faces.”—Isaiah 25:8 (NWT)." },
+      { id: 32, cat: "Religion", text: "Not all religions please God.", refs: "Jer. 7:11; Matt. 7:13, 14, 21-23", verseQuote: "“Not everyone saying to me, ‘Lord, Lord,’ will enter into the Kingdom of the heavens, but only the one doing the will of my Father who is in the heavens will.”—Matthew 7:21 (NWT)." },
+      { id: 33, cat: "Religion", text: "God hates hypocrisy.", refs: "Isa. 29:13; Mic. 3:11; Mark 7:6-8", verseQuote: "“This people honors me with their lips, but their hearts are far removed from me. It is in vain that they keep worshipping me, for they teach commands of men as doctrines.”—Mark 7:6, 7 (NWT)." },
+      { id: 34, cat: "Religion", text: "Genuine love identifies true religion.", refs: "Mic. 4:3; John 13:34, 35", verseQuote: "“By this all will know that you are my disciples—if you have love among yourselves.”—John 13:35 (NWT)." }
+    ];
+
+    let currentLesson = 1;
+    let selectedTruthCategory = "All";
+    let checkedSteps = JSON.parse(localStorage.getItem('lmd_checked_steps') || '{}');
+    let lessonNotes = JSON.parse(localStorage.getItem('lmd_lesson_notes') || '{}');
+
+    const themePalettes = {
+      teal: {
+        headerBg: "bg-teal-800",
+        pillBg: "bg-teal-100 text-teal-800",
+        fillBg: "bg-teal-600",
+        sliderText: "text-teal-600",
+        cardBorder: "border-teal-600",
+        badgeBg: "bg-teal-700 text-white",
+        lightBg: "bg-teal-50/70 border-teal-200",
+        accentText: "text-teal-800"
+      },
+      amber: {
+        headerBg: "bg-amber-700",
+        pillBg: "bg-amber-100 text-amber-900",
+        fillBg: "bg-amber-600",
+        sliderText: "text-amber-600",
+        cardBorder: "border-amber-600",
+        badgeBg: "bg-amber-700 text-white",
+        lightBg: "bg-amber-50/70 border-amber-200",
+        accentText: "text-amber-900"
+      },
+      indigo: {
+        headerBg: "bg-indigo-800",
+        pillBg: "bg-indigo-100 text-indigo-800",
+        fillBg: "bg-indigo-600",
+        sliderText: "text-indigo-600",
+        cardBorder: "border-indigo-600",
+        badgeBg: "bg-indigo-700 text-white",
+        lightBg: "bg-indigo-50/70 border-indigo-200",
+        accentText: "text-indigo-800"
+      }
+    };
+
+    function openScriptureModal(ref, customQuote = null) {
+      const modal = document.getElementById('scripture-modal');
+      const titleEl = document.getElementById('modal-ref-title');
+      const bodyEl = document.getElementById('modal-verse-body');
+      const linkEl = document.getElementById('modal-jw-link');
+
+      titleEl.textContent = ref;
+      const text = customQuote || nwtScriptures[ref] || "Open this scripture directly in the New World Translation Study Edition on JW.org.";
+      bodyEl.innerHTML = `<p class="font-medium text-slate-800">${text}</p>`;
+      linkEl.href = `https://www.jw.org/en/search/?q=${encodeURIComponent(ref + ' NWT')}`;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeScriptureModal() {
+      const modal = document.getElementById('scripture-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function saveLessonNote(lessonNum, val) {
+      lessonNotes[lessonNum] = val;
+      localStorage.setItem('lmd_lesson_notes', JSON.stringify(lessonNotes));
+      const statusEl = document.getElementById('note-save-status');
+      if (statusEl) {
+        statusEl.textContent = "✓ Saved to browser";
+        statusEl.className = "text-xs font-semibold text-emerald-600 transition-opacity";
+      }
+      renderNodeStrip();
+    }
+
+    function exportNotes() {
+      let lines = [
+        "====================================================",
+        "LOVE PEOPLE—MAKE DISCIPLES (lmd-E) — PERSONAL STUDY NOTES",
+        "Exported: " + new Date().toLocaleDateString(),
+        "====================================================\n"
+      ];
+
+      lessons.forEach(l => {
+        const note = (lessonNotes[l.num] || "").trim();
+        const completed = l.imitate
+          .map((s, idx) => checkedSteps[`${l.num}-${idx}`] ? `  [x] ${idx + 3}. ${s.title}` : `  [ ] ${idx + 3}. ${s.title}`)
+          .join("\n");
+
+        lines.push(`LESSON ${l.num}: ${l.quality.toUpperCase()} (${l.scripture})`);
+        lines.push(`Principle: ${l.principle}`);
+        lines.push(`Action Steps:\n${completed}`);
+        lines.push(`Personal Notes:\n${note ? note : "(No notes recorded yet)"}`);
+        lines.push("----------------------------------------------------\n");
+      });
+
+      const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Love-People-Make-Disciples-Notes.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderNodeStrip() {
+      const strip = document.getElementById('node-strip');
+      strip.innerHTML = lessons.map(l => {
+        const isActive = l.num === currentLesson;
+        const hasNote = !!(lessonNotes[l.num] && lessonNotes[l.num].trim().length > 0);
+        let colorClass = "bg-slate-100 text-slate-600 hover:bg-slate-200";
+        if (isActive) {
+          colorClass = l.theme === 'teal' ? "bg-teal-700 text-white shadow-sm ring-2 ring-teal-300" :
+                       l.theme === 'amber' ? "bg-amber-600 text-white shadow-sm ring-2 ring-amber-300" :
+                       "bg-indigo-700 text-white shadow-sm ring-2 ring-indigo-300";
+        }
+        return `
+          <button
+            onclick="scrubToLesson(${l.num})"
+            class="relative py-1.5 px-1 rounded-lg text-center transition-all ${colorClass}"
+            title="Lesson ${l.num}: ${l.quality}"
+          >
+            ${hasNote ? '<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-400" title="Has personal notes"></span>' : ''}
+            <div class="text-xs font-extrabold">${l.num}</div>
+            <div class="text-[10px] truncate font-medium opacity-90">${l.quality}</div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function toggleStepCheck(lessonNum, stepIndex) {
+      const key = `${lessonNum}-${stepIndex}`;
+      checkedSteps[key] = !checkedSteps[key];
+      localStorage.setItem('lmd_checked_steps', JSON.stringify(checkedSteps));
+      renderLessonCard(false);
+    }
+
+    function renderLessonCard(animate = true) {
+      const lesson = lessons[currentLesson - 1];
+      const pal = themePalettes[lesson.theme];
+      const currentNote = lessonNotes[lesson.num] || "";
+
+      document.getElementById('app-header').className = `${pal.headerBg} text-white shadow-lg transition-colors duration-500 sticky top-0 z-30`;
+      const pill = document.getElementById('section-pill');
+      pill.className = `px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${pal.pillBg}`;
+      pill.textContent = lesson.section;
+
+      document.getElementById('scrubber-count').textContent = lesson.num;
+      const fill = document.getElementById('scrubber-fill');
+      fill.className = `h-full ${pal.fillBg} transition-all duration-300`;
+      fill.style.width = `${(lesson.num / 12) * 100}%`;
+
+      const slider = document.getElementById('lesson-scrubber');
+      slider.value = lesson.num;
+      slider.className = `relative z-10 ${pal.sliderText}`;
+
+      renderNodeStrip();
+
+      const container = document.getElementById('lesson-card-container');
+      if (animate) {
+        container.classList.remove('fade-enter');
+        void container.offsetWidth;
+        container.classList.add('fade-enter');
+      }
+
+      container.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-sm border-t-4 ${pal.cardBorder} border-x border-b border-slate-200 overflow-hidden">
+          
+          <!-- Lesson Top Banner -->
+          <div class="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase ${pal.badgeBg}">
+                  Lesson ${lesson.num}
+                </span>
+                <button
+                  onclick="openScriptureModal('${lesson.scripture}')"
+                  class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-teal-50 text-teal-800 border border-teal-200 hover:bg-teal-100 transition-colors flex items-center gap-1"
+                  title="Click to read NWT Scripture"
+                >
+                  📖 ${lesson.scripture} (Read NWT)
+                </button>
+                <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                  🎬 VIDEO: ${lesson.video}
+                </span>
+              </div>
+              <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">${lesson.quality}</h2>
+            </div>
+
+            <!-- Principle Callout Box (Clickable) -->
+            <div
+              onclick="openScriptureModal('${lesson.principleRef}')"
+              class="${pal.lightBg} border rounded-xl p-4 md:max-w-sm cursor-pointer hover:shadow-xs transition-all"
+              title="Click to view ${lesson.principleRef} in the NWT"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider ${pal.accentText}">Guiding Principle (NWT)</span>
+                <span class="text-[11px] font-semibold underline ${pal.accentText}">Read Verse ↗</span>
+              </div>
+              <p class="text-sm font-semibold text-slate-800 mt-1 italic">${lesson.principle}</p>
+            </div>
+          </div>
+
+          <!-- Lesson Body Grid -->
+          <div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: What Character Did, What We Learn & Clickable See Also -->
+            <div class="lg:col-span-5 space-y-6">
+              <div class="space-y-3">
+                <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between">
+                  <span>1. What ${lesson.character} Did</span>
+                  <button
+                    onclick="openScriptureModal('${lesson.scripture}')"
+                    class="text-xs font-bold ${pal.accentText} underline hover:opacity-80"
+                  >
+                    Open ${lesson.scripture}
+                  </button>
+                </h3>
+                <div class="space-y-2.5">
+                  ${lesson.questions.map((q, idx) => `
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-sm text-slate-800 flex items-start gap-2.5">
+                      <span class="font-bold ${pal.accentText}">${idx === 0 ? 'a.' : 'b.'}</span>
+                      <span>${q}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="p-5 rounded-2xl ${pal.lightBg} border space-y-2">
+                <h3 class="text-xs font-extrabold uppercase tracking-wider ${pal.accentText}">
+                  2. What Do We Learn From ${lesson.character}?
+                </h3>
+                <p class="text-base font-bold text-slate-900 leading-snug">
+                  ${lesson.coreLesson}
+                </p>
+              </div>
+
+              <!-- Clickable See Also Scripture Pills -->
+              <div class="pt-3 border-t border-slate-100 space-y-2">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  See Also Scriptures (Click to Read NWT):
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  ${lesson.seeAlso.map(ref => `
+                    <button
+                      onclick="openScriptureModal('${ref}')"
+                      class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-teal-50 text-slate-700 hover:text-teal-800 border border-slate-200 hover:border-teal-300 transition-colors"
+                    >
+                      📖 ${ref}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Imitate Checklist + Personal Ministry Notes -->
+            <div class="lg:col-span-7 space-y-6">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-500">
+                    Imitate ${lesson.character} (Action Steps)
+                  </h3>
+                  <span class="text-xs text-slate-400">Click any step to mark practiced</span>
+                </div>
+
+                <div class="space-y-3">
+                  ${lesson.imitate.map((step, idx) => {
+                    const isChecked = !!checkedSteps[`${lesson.num}-${idx}`];
+                    return `
+                      <div
+                        onclick="toggleStepCheck(${lesson.num},${idx})"
+                        class="p-4 rounded-xl border transition-all cursor-pointer select-none ${
+                          isChecked
+                            ? 'bg-emerald-50/60 border-emerald-300 text-slate-600'
+                            : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800 shadow-2xs'
+                        }"
+                      >
+                        <div class="flex items-start gap-3.5">
+                          <div class="mt-0.5 w-5 h-5 rounded-md flex items-center justify-center border text-xs font-bold ${
+                            isChecked ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-slate-300 bg-white'
+                          }">
+                            ${isChecked ? '✓' : idx + 3}
+                          </div>
+                          <div class="flex-1 space-y-1">
+                            <div class="font-bold text-sm ${isChecked ? 'line-through text-emerald-900' : 'text-slate-900'}">
+                              ${idx + 3}.${step.title}
+                            </div>
+                            <p class="text-sm text-slate-600 leading-relaxed">${step.detail}</p>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+
+              <!-- Personal Ministry Reflections & Notes Box -->
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <label for="lesson-note-input" class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <span>✍️ Personal Ministry Notes & Local Territory Ideas (Lesson ${lesson.num})</span>
+                  </label>
+                  <span id="note-save-status" class="text-xs text-slate-400">Auto-saves locally</span>
+                </div>
+                <textarea
+                  id="lesson-note-input"
+                  rows="3"
+                  oninput="saveLessonNote(${lesson.num}, this.value)"
+                  placeholder="How can I apply '${lesson.quality}' when speaking with neighbors, return visits, or Bible students this week?"
+                  class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-600"
+                >${currentNote.replace(/</g, '&lt;')}</textarea>
+              </div>
+
+              <!-- Prev / Next Navigation Footer -->
+              <div class="pt-2 flex items-center justify-between border-t border-slate-100">
+                <button
+                  onclick="scrubToLesson(${Math.max(1, lesson.num - 1)})"
+                  ${lesson.num === 1 ? 'disabled' : ''}
+                  class="px-4 py-2 rounded-xl text-sm font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none"
+                >
+                  ← Previous Lesson
+                </button>
+                <button
+                  onclick="scrubToLesson(${Math.min(12, lesson.num + 1)})"
+                  ${lesson.num === 12 ? 'disabled' : ''}
+                  class="px-4 py-2 rounded-xl text-sm font-semibold ${pal.badgeBg} hover:opacity-95 disabled:opacity-40 disabled:pointer-events-none"
+                >
+                  Next Lesson →
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+
+    function scrubToLesson(num) {
+      currentLesson = parseInt(num, 10);
+      renderLessonCard(true);
+    }
+
+    function switchTab(tab) {
+      const views = ['lessons', 'intro', 'appendixA', 'appendixBC'];
+      views.forEach(v => {
+        document.getElementById(`view-${v}`).classList.toggle('hidden', v !== tab);
+        const btn = document.getElementById(`tab-${v}`);
+        if (v === tab) {
+          btn.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-white text-slate-900 shadow-sm";
+        } else {
+          btn.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-white/85 hover:bg-white/10";
+        }
+      });
+    }
+
+    function renderTruthCategories() {
+      const cats = ["All", ...new Set(truthsData.map(t => t.cat))];
+      const container = document.getElementById('truth-categories');
+      container.innerHTML = cats.map(c => `
+        <button
+          onclick="setTruthCategory('${c.replace(/'/g, "\\'")}')"
+          class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            selectedTruthCategory === c
+              ? 'bg-teal-700 text-white shadow-2xs'
+              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }"
+        >
+          ${c}
+        </button>
+      `).join('');
+    }
+
+    function setTruthCategory(cat) {
+      selectedTruthCategory = cat;
+      renderTruthCategories();
+      renderTruths();
+    }
+
+    function renderTruths() {
+      const query = (document.getElementById('truth-search')?.value || '').toLowerCase();
+      const filtered = truthsData.filter(t => {
+        const matchesCat = selectedTruthCategory === "All" || t.cat === selectedTruthCategory;
+        const matchesQuery = t.text.toLowerCase().includes(query) ||
+                             t.refs.toLowerCase().includes(query) ||
+                             t.cat.toLowerCase().includes(query);
+        return matchesCat && matchesQuery;
+      });
+
+      const grid = document.getElementById('truths-grid');
+      grid.innerHTML = filtered.map(t => `
+        <div
+          onclick="openScriptureModal('Truth #${t.id}: ${t.refs.replace(/'/g, "\\'")}', '${t.verseQuote.replace(/'/g, "\\'")}')"
+          class="bg-white rounded-xl p-4 shadow-2xs border border-slate-200 flex flex-col justify-between gap-3 hover:border-teal-500 hover:shadow-md transition-all cursor-pointer"
+          title="Click to read key NWT verse"
+        >
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-teal-50 text-teal-800">${t.cat}</span>
+              <span class="text-xs font-extrabold text-slate-400">#${t.id}</span>
+            </div>
+            <p class="text-sm font-bold text-slate-900 leading-snug">${t.text}</p>
+          </div>
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-teal-800">
+            <span>📖 ${t.refs}</span>
+            <span class="underline text-[11px]">Read NWT ↗</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Keyboard Left/Right Arrow Scrubbing & Escape to close Modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeScriptureModal();
+        return;
+      }
+      if (document.getElementById('view-lessons').classList.contains('hidden')) return;
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) && document.activeElement.id !== 'lesson-scrubber') return;
+      if (e.key === 'ArrowRight' && currentLesson < 12) {
+        scrubToLesson(currentLesson + 1);
+      } else if (e.key === 'ArrowLeft' && currentLesson > 1) {
+        scrubToLesson(currentLesson - 1);
+      }
+    });
+
+    // Initialize App
+    renderLessonCard(false);
+    renderTruthCategories();
+    renderTruths();
+  </script>
+</body>
+</html>
